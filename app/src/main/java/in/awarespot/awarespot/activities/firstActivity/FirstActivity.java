@@ -23,7 +23,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
     private cardPagerAdapter mCardAdapter;
     private ShadowTransfomer mCardShadowTransformer;
-    private CardFragmentPagerAdapter mFragmentCardAdapter;
+    private cardFragmentPagerAdapter mFragmentCardAdapter;
     private ShadowTransfomer mFragmentCardShadowTransformer;
 
     private boolean mShowingFragments = false;
@@ -38,10 +38,10 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         mButton.setOnClickListener(this);
 
         mCardAdapter = new cardPagerAdapter();
-        mCardAdapter.addCardItem(new CardItem(R.string.title_1, R.drawable.unnamedOne));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_1, R.drawable.unnamedone));
         mCardAdapter.addCardItem(new CardItem(R.string.title_2, R.drawable.unnamed));
-        mCardAdapter.addCardItem(new CardItem(R.string.title_3, R.drawable.unnamedTwo));
-        mFragmentCardAdapter = new CardFragmentPagerAdapter(getSupportFragmentManager(),
+        mCardAdapter.addCardItem(new CardItem(R.string.title_3, R.drawable.unnamedtwo));
+        mFragmentCardAdapter = new cardFragmentPagerAdapter(getSupportFragmentManager(),
                 dpToPixels(2, this));
 
         mCardShadowTransformer = new ShadowTransfomer(mViewPager, mCardAdapter);

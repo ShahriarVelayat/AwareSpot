@@ -56,6 +56,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private Geocoder mGeocoder;
 
     private List<String> citiesKnow = new ArrayList<>();
+    private List<String> citiesList = new ArrayList<>();
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
@@ -65,6 +66,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         ScreenDesign();
+        Paper.init(this);
         initUiElements();
         initUiListners();
         getuser();
@@ -106,6 +108,19 @@ public class UserProfileActivity extends AppCompatActivity {
         if (user != null) {
             // User is signed in
             uid = user.getUid();
+            UserModel userModel = Paper.book().read(FirebaseInfo.Users,new UserModel());
+            nameEditText.setText(userModel.getNameOfUser());
+
+            citiesList = userModel.citiesKnown;
+            try{
+                for (String city : citiesList){
+                    adapter.add(city);
+                }
+            }catch (Exception e){
+                Log.d(TAG,""+e);
+            }
+
+            adapter.notifyDataSetChanged();
             Log.d(TAG, uid);
         } else {
             // No user is signed in
@@ -120,6 +135,8 @@ public class UserProfileActivity extends AppCompatActivity {
         userModel.setCitiesKnown(citiesKnow);
 
         FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Users).child(uid).setValue(userModel);
+        Paper.book().write(FirebaseInfo.Users,userModel);
+
         for(String city : citiesKnow){
             FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Cities).child(city).child(uid).setValue(userModel.getNotifyToken());
         }

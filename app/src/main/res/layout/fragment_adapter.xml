@@ -25,10 +25,9 @@
                 android:layout_height="wrap_content"
                 android:text="Card title" />
 
-            <TextView
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="24dp"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Etiam eget ligula eu lectus lobortis condimentum." />
 

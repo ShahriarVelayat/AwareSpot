@@ -64,6 +64,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     private double latPoint;
     private double lngPoint;
     private Geocoder mGeocoder;
+    private TextView mProfileText;
 
     private TextView search;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
@@ -87,7 +88,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void initUiElement(){
-
+        mProfileText = (TextView) findViewById(R.id.profile);
         search = (TextView) findViewById(R.id.search);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -99,14 +100,20 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 dialogeShow();
             }
         });
-
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openAutocompleteActivity();
             }
         });
-
+        mProfileText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this,UserProfileActivity.class);
+                startActivity(intent);
+                overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+            }
+        });
     }
 
     public void dialogeShow(){
@@ -125,7 +132,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
                         new MaterialDialog.Builder(HomeActivity.this)
                                 .title("Enter Content")
-                                .content("Brerif of the Awarespot")
+                                .content("Breif of the Awarespot")
                                 .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
                                 .input("Title", "", new MaterialDialog.InputCallback() {
                                     @Override

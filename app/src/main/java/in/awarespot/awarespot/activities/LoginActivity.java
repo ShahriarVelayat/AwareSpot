@@ -1,5 +1,6 @@
 package in.awarespot.awarespot.activities;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,10 @@ import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
 import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
 import in.awarespot.awarespot.Models.UserModel;
 import in.awarespot.awarespot.R;
+import in.awarespot.awarespot.activities.firstActivity.CardItem;
+import in.awarespot.awarespot.activities.firstActivity.ShadowTransfomer;
+import in.awarespot.awarespot.activities.firstActivity.cardFragmentPagerAdapter;
+import in.awarespot.awarespot.activities.firstActivity.cardPagerAdapter;
 
 
 public class LoginActivity extends AppCompatActivity implements
@@ -75,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements
     private TextView mStatusText;
     private TextView mDetailText;
 
+
     private EditText mPhoneNumberField;
     private EditText mVerificationField;
 
@@ -83,12 +89,17 @@ public class LoginActivity extends AppCompatActivity implements
     private Button mResendButton;
     private Button mSignOutButton;
 
+
     private Button mButton;
     private ViewPager mViewPager;
 
-
+    private cardPagerAdapter mCardAdapter;
+    private ShadowTransfomer mCardShadowTransformer;
+    private cardFragmentPagerAdapter mFragmentCardAdapter;
+    private ShadowTransfomer mFragmentCardShadowTransformer;
 
     private boolean mShowingFragments = false;
+
     private boolean checkFirst = false;
     UserModel userModel = new UserModel();
 
@@ -111,6 +122,7 @@ public class LoginActivity extends AppCompatActivity implements
         mStatusText = (TextView) findViewById(R.id.status);
         mDetailText = (TextView) findViewById(R.id.detail);
 
+
         mPhoneNumberField = (EditText) findViewById(R.id.field_phone_number);
         mVerificationField = (EditText) findViewById(R.id.field_verification_code);
 
@@ -118,6 +130,22 @@ public class LoginActivity extends AppCompatActivity implements
         mVerifyButton = (Button) findViewById(R.id.button_verify_phone);
         mResendButton = (Button) findViewById(R.id.button_resend);
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
+
+        mViewPager = (ViewPager) findViewById(R.id.viewPager);
+
+        mCardAdapter = new cardPagerAdapter();
+        mCardAdapter.addCardItem(new CardItem(R.string.title_1, R.drawable.unnamedone));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_2, R.drawable.unnamed));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_3, R.drawable.unnamedtwo));
+        mFragmentCardAdapter = new cardFragmentPagerAdapter(getSupportFragmentManager(),
+                dpToPixels(2, LoginActivity.this));
+
+        mCardShadowTransformer = new ShadowTransfomer(mViewPager, mCardAdapter);
+        mFragmentCardShadowTransformer = new ShadowTransfomer(mViewPager, mFragmentCardAdapter);
+
+        mViewPager.setAdapter(mCardAdapter);
+        mViewPager.setPageTransformer(false, mCardShadowTransformer);
+        mViewPager.setOffscreenPageLimit(3);
 
         // Assign click listeners
         mStartButton.setOnClickListener(this);
@@ -381,7 +409,7 @@ public class LoginActivity extends AppCompatActivity implements
                                     finish();
                                 }
                             }catch (Exception e){
-                                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
+                                Intent intent = new Intent(LoginActivity.this,UserProfileActivity.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -405,6 +433,9 @@ public class LoginActivity extends AppCompatActivity implements
             break;
         }
 
+
+
+
         if (user == null) {
             // Signed out
             mPhoneNumberViews.setVisibility(View.VISIBLE);
@@ -426,6 +457,10 @@ public class LoginActivity extends AppCompatActivity implements
         }
     }
 
+
+    public static float dpToPixels(int dp, Context context) {
+        return dp * (context.getResources().getDisplayMetrics().density);
+    }
 
     public void ScreenDesign(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

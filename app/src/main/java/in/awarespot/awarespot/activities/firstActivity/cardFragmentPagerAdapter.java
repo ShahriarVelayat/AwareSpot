@@ -13,12 +13,12 @@ import java.util.List;
  * Created by kusha_000 on 24-06-2017.
  */
 
-public class CardFragmentPagerAdapter extends FragmentStatePagerAdapter implements CardAdapter {
+public class cardFragmentPagerAdapter extends FragmentStatePagerAdapter implements CardAdapter {
 
     private List<CardFragment> mFragments;
     private float mBaseElevation;
 
-    public CardFragmentPagerAdapter(FragmentManager fm, float baseElevation) {
+    public cardFragmentPagerAdapter(FragmentManager fm, float baseElevation) {
         super(fm);
         mFragments = new ArrayList<>();
         mBaseElevation = baseElevation;
