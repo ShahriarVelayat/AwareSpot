@@ -89,5 +89,6 @@
         Website: %5$s
     ]]>
     </string>
+    <string name="title_activity_home">Map</string>
 
 </resources>
