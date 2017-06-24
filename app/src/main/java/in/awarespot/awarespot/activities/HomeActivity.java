@@ -1,18 +1,39 @@
 package in.awarespot.awarespot.activities;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.InputType;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,10 +65,16 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     private double lngPoint;
     private Geocoder mGeocoder;
 
+    private TextView search;
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         ScreenDesign();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -61,6 +88,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void initUiElement(){
 
+        search = (TextView) findViewById(R.id.search);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
@@ -71,6 +99,14 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 dialogeShow();
             }
         });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openAutocompleteActivity();
+            }
+        });
+
     }
 
     public void dialogeShow(){
@@ -129,6 +165,11 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
     }
@@ -225,18 +266,126 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
     public void markOnMap(String id , String Title,String Despcription,String city,double lat, double lng){
         LatLng sydney = new LatLng(lat, lng);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot" + city );
+        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot " + city );
         spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
         spot.snippet("" + Despcription);
         mMap.addMarker(spot);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(lat,lng))
-                .zoom(4)
+                .zoom(12)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
+
+    public void searchCity(double latPoint, double lngPoint){
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(latPoint,lngPoint))
+                .zoom(12)
+                .build();
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void openAutocompleteActivity() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    .build(HomeActivity.this);
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(HomeActivity.this, e.getConnectionStatusCode(),
+                    0 /* requestCode */).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            Log.e(TAG, message);
+            Toast.makeText(HomeActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                Log.i(TAG, "Place Selected: " + place.getLatLng());
+
+                searchCity(place.getLatLng().latitude,place.getLatLng().longitude);
+                // Format the place's details and display them in the TextView.
+//                nameEditText.setText(formatPlaceDetails(getResources(), place.getName(),
+//                        place.getId(), place.getAddress(), place.getPhoneNumber(),
+//                        place.getWebsiteUri()));
+
+
+                // Display attributions if required.
+                CharSequence attributions = place.getAttributions();
+                if (!TextUtils.isEmpty(attributions)) {
+
+                } else {
+
+                }
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                Log.e(TAG, "Error: Status = " + status.toString());
+            } else if (resultCode == RESULT_CANCELED) {
+                // Indicates that the activity closed before a selection was made. For example if
+                // the user pressed the back button.
+            }
+        }
+    }
+
+    private static Spanned formatPlaceDetails(Resources res, CharSequence name, String id,
+                                              CharSequence address, CharSequence phoneNumber, Uri websiteUri) {
+        Log.e(TAG, res.getString(R.string.place_details, name, id, address, phoneNumber,
+                websiteUri));
+        return Html.fromHtml(res.getString(R.string.place_details, name, id, address, phoneNumber,
+                websiteUri));
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.home_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.profile : profile();
+                break;
+            case R.id.logout : ;
+                break;
+            default:
+                Toast.makeText(this,"No actionFound",Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void profile(){
+        Intent intent = new Intent( HomeActivity.this,UserProfileActivity.class);
+        startActivity(intent);
+        overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+
+    }
+
 
 }

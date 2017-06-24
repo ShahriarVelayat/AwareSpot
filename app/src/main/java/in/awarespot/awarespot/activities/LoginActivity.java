@@ -1,6 +1,7 @@
 package in.awarespot.awarespot.activities;
 
 import android.os.Build;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
@@ -81,6 +83,12 @@ public class LoginActivity extends AppCompatActivity implements
     private Button mResendButton;
     private Button mSignOutButton;
 
+    private Button mButton;
+    private ViewPager mViewPager;
+
+
+
+    private boolean mShowingFragments = false;
     private boolean checkFirst = false;
     UserModel userModel = new UserModel();
 
@@ -94,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             onRestoreInstanceState(savedInstanceState);
         }
+
 
         // Assign views
         mPhoneNumberViews = (ViewGroup) findViewById(R.id.phone_auth_fields);
@@ -361,38 +370,35 @@ public class LoginActivity extends AppCompatActivity implements
 
                 if(checkFirst == true){
 
-                    new MaterialDialog.Builder(this)
-                            .title("Enter Name Please")
-                            .inputType(InputType.TYPE_CLASS_TEXT)
-                            .input("Name Please", "", new MaterialDialog.InputCallback() {
-                                @Override
-                                public void onInput(MaterialDialog dialog, CharSequence input) {
-                                    // Do something
-
-                                    userModel.setNameOfUser(input.toString());
-                                    new MaterialDialog.Builder(LoginActivity.this)
-                                            .title("Enter City you Know")
-                                            .inputType(InputType.TYPE_CLASS_TEXT)
-                                            .input("Any one city you know ", "", new MaterialDialog.InputCallback() {
-                                                @Override
-                                                public void onInput(MaterialDialog dialog, CharSequence input) {
-                                                    // Do something
-                                                    List<String> citiesList = new ArrayList<String>();
-                                                    citiesList.add(input.toString().toLowerCase());
-                                                    userModel.setCitiesKnown(citiesList);
-                                                    userModel.setUid(user.getUid());
-                                                    userModel.setNotifyToken(FirebaseInstanceId.getInstance().getToken());
-                                                    FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Users).child(user.getUid()).setValue(userModel);
-                                                    FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Cities).child(input.toString().toLowerCase()).child(user.getUid()).setValue(FirebaseInstanceId.getInstance().getToken());
-                                                }
-                                            }).show();
-
+                    FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Users).orderByChild("uid").equalTo(user.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            UserModel userModel = dataSnapshot.getValue(UserModel.class);
+                            try{
+                                if(userModel.getUid().equals(user.getUid())){
+                                    Intent intent = new Intent(LoginActivity.this,UserProfileActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 }
-                            }).show();
+                            }catch (Exception e){
+                                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }else {
-                    Intent intent = new Intent(LoginActivity.this,UserProfileActivity.class);
+
+                    Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
                     startActivity(intent);
                     finish();
+
                 }
 
             }
