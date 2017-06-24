@@ -26,12 +26,20 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
+import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
 import in.awarespot.awarespot.R;
+import in.awarespot.awarespot.Models.UserModel;
+
+import in.awarespot.awarespot.adapter.CitiesAdapter;
+import io.paperdb.Paper;
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -39,11 +47,12 @@ public class UserProfileActivity extends AppCompatActivity {
     private final static String TAG = "UserProfileActivity";
     private EditText nameEditText;
     private Button doneButton, addNewButton;
-    private ListView cityListVIew;
     private String uid;
-    private TextView attributeTextView;
-
+    private ListView cityListView;
+    private CitiesAdapter adapter;
     private Geocoder mGeocoder;
+
+    private List<String> citiesKnow = new ArrayList<>();
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
@@ -60,16 +69,19 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void initUiElements() {
+        Paper.init(this);
         nameEditText = (EditText) findViewById(R.id.input_name);
-        attributeTextView = (TextView) findViewById(R.id.attribute);
-        doneButton  = (Button) findViewById(R.id.btn_done);
+        doneButton = (Button) findViewById(R.id.btn_done);
         addNewButton = (Button) findViewById(R.id.btn_addnew);
-        cityListVIew = (ListView) findViewById(R.id.listViewAndroid);
+        cityListView = (ListView) findViewById(R.id.listViewAndroid) ;
 
         mGeocoder = new Geocoder(UserProfileActivity.this, Locale.getDefault());
+        adapter = new CitiesAdapter(this, citiesKnow);
+        cityListView.setAdapter(adapter);
     }
 
-    public void initUiListners(){
+    public void initUiListners() {
+
 
         addNewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,20 +93,35 @@ public class UserProfileActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                setuserModel();
             }
         });
     }
 
-    public void getuser(){
+    public void getuser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
             uid = user.getUid();
-            Log.d(TAG,uid);
+            Log.d(TAG, uid);
         } else {
             // No user is signed in
         }
+    }
+
+    public void setuserModel() {
+        UserModel userModel = new UserModel();
+        userModel.setUid(uid);
+        userModel.setNameOfUser(nameEditText.getText().toString());
+        userModel.setNotifyToken(FirebaseInstanceId.getInstance().getToken());
+        userModel.setCitiesKnown(citiesKnow);
+
+        FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Users).child(uid).setValue(userModel);
+        for(String city : citiesKnow){
+            FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Cities).child(city).child(uid).setValue(userModel.getNotifyToken());
+        }
+        Intent intent = new Intent(UserProfileActivity.this,HomeActivity.class);
+        startActivity(intent);
     }
 
     private void openAutocompleteActivity() {
@@ -134,26 +161,30 @@ public class UserProfileActivity extends AppCompatActivity {
                 Double lat = place.getLatLng().latitude;
                 Double lng = place.getLatLng().longitude;
 
-                try{
+                try {
 
-                    Log.i(TAG, "City Selected: " + getCityNameByCoordinates(lat,lng));
-                    Log.i(TAG, "City Selected: " + getCityNameByCoordinates(lat,lng));
-                }catch (Exception e){
+                    Log.i(TAG, "City Selected: " + getCityNameByCoordinates(lat, lng));
+                    Log.i(TAG, "City Selected: " + getCityNameByCoordinates(lat, lng));
 
+                    citiesKnow.add(getCityNameByCoordinates(lat, lng));
+                    adapter.notifyDataSetChanged();
+
+                } catch (Exception e) {
+                    Log.i(TAG, "City Selected: " + e);
                 }
 
                 // Format the place's details and display them in the TextView.
-                nameEditText.setText(formatPlaceDetails(getResources(), place.getName(),
-                        place.getId(), place.getAddress(), place.getPhoneNumber(),
-                        place.getWebsiteUri()));
-                attributeTextView.setText(""+place.getLocale());
+//                nameEditText.setText(formatPlaceDetails(getResources(), place.getName(),
+//                        place.getId(), place.getAddress(), place.getPhoneNumber(),
+//                        place.getWebsiteUri()));
+
 
                 // Display attributions if required.
                 CharSequence attributions = place.getAttributions();
                 if (!TextUtils.isEmpty(attributions)) {
-                    attributeTextView.setText(Html.fromHtml(attributions.toString()));
+
                 } else {
-                    attributeTextView.setText("");
+
                 }
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
@@ -184,6 +215,8 @@ public class UserProfileActivity extends AppCompatActivity {
         }
         return null;
     }
+
+
 
 }
 

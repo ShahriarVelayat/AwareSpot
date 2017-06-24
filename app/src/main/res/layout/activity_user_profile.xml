@@ -29,6 +29,8 @@
         android:layout_height="match_parent"
         android:id="@+id/listViewAndroid"
         android:layout_above="@+id/btn_addnew"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
         >
 
     </ListView>
