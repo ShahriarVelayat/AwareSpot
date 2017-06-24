@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "326300960154",
+    "firebase_url": "https://awarespot.firebaseio.com",
+    "project_id": "awarespot",
+    "storage_bucket": "awarespot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326300960154:android:dc4590d5f392351e",
+        "android_client_info": {
+          "package_name": "in.awarespot.awarespot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326300960154-8sr22qeejlv3vkqv7co8g3kns6q1qf1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.awarespot.awarespot",
+            "certificate_hash": "03f87df4d72c25198303f42dcc97628b40865f49"
+          }
+        },
+        {
+          "client_id": "326300960154-nviqg8i3p9s256eaeoj7s0651msmemm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyIdI0wlsO_RAyQBw2X0RMQCFXKgOE0eA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "326300960154-nviqg8i3p9s256eaeoj7s0651msmemm2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
