@@ -1,11 +1,13 @@
 
-package in.awarespot.awarespot;
+package in.awarespot.awarespot.activities;
 
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import in.awarespot.awarespot.R;
 
 public class SplashActivity extends AppCompatActivity {
 
