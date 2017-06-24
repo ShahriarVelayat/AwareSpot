@@ -1,6 +1,8 @@
 package in.awarespot.awarespot.activities;
 
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -21,6 +23,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
 import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
 import in.awarespot.awarespot.Models.AwareSpotModel;
@@ -34,6 +40,8 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     private double latPoint;
     private double lngPoint;
 
+    private Geocoder mGeocoder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +52,8 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        mGeocoder = new Geocoder(HomeActivity.this, Locale.getDefault());
     }
 
 
@@ -61,7 +71,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 lngPoint = point.longitude;
 
                 dialogeShow();
-
             }
         });
     }
@@ -81,17 +90,20 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                         awareSpotModel.setTitleOfAwareSpot(input.toString());
 
                         new MaterialDialog.Builder(HomeActivity.this)
-                                .title("Enter title")
-                                .content("one can give any title to there aware spot")
+                                .title("Enter Content")
+                                .content("Brerif of the Awarespot")
                                 .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
                                 .input("Title", "", new MaterialDialog.InputCallback() {
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
                                         // Do something
-                                        awareSpotModel.setTitleOfAwareSpot(input.toString());
-
-                                        FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).push().setValue(awareSpotModel);
-
+                                        awareSpotModel.setContentOfAwareSpot(input.toString());
+                                        try{
+                                            awareSpotModel.setCity(getCityNameByCoordinates(latPoint,lngPoint));
+                                            FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).push().setValue(awareSpotModel);
+                                        }catch(Exception e){
+                                            Log.d(TAG,""+e);
+                                        }
 
                                     }
                                 }).show();
@@ -165,5 +177,16 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 .zoom(4)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private String getCityNameByCoordinates(double lat, double lon) throws IOException {
+
+        List<Address> addresses = mGeocoder.getFromLocation(lat, lon, 1);
+        if (addresses != null && addresses.size() > 0) {
+
+            return addresses.get(0).getLocality();
+
+        }
+        return null;
     }
 }
