@@ -6,6 +6,8 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import in.awarespot.awarespot.R;
 
@@ -22,6 +24,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         screendesign();
+
+        ScreenDesign();
 
         splashThread();
 
@@ -73,6 +77,30 @@ public class SplashActivity extends AppCompatActivity {
         };
 
         splashTread.start();
+
+    }
+
+    public void ScreenDesign(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View decor = getWindow().getDecorView();
+            boolean shouldChangeStatusBarTintToDark = true;
+
+            if (shouldChangeStatusBarTintToDark) {
+                decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            } else {
+                // We want to change tint color to white again.
+                // You can also record the flags in advance so that you can turn UI back completely if
+                // you have set other flags before, such as translucent or full screen.
+                decor.setSystemUiVisibility(0);
+
+            }
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
+            }
+        }
 
     }
 
