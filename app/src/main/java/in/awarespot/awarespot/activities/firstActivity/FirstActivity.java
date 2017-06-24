@@ -38,9 +38,9 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         mButton.setOnClickListener(this);
 
         mCardAdapter = new cardPagerAdapter();
-        mCardAdapter.addCardItem(new CardItem(R.string.title_1, R.string.text_1));
-        mCardAdapter.addCardItem(new CardItem(R.string.title_2, R.string.text_1));
-        mCardAdapter.addCardItem(new CardItem(R.string.title_3, R.string.text_1));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_1, R.drawable.unnamedOne));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_2, R.drawable.unnamed));
+        mCardAdapter.addCardItem(new CardItem(R.string.title_3, R.drawable.unnamedTwo));
         mFragmentCardAdapter = new CardFragmentPagerAdapter(getSupportFragmentManager(),
                 dpToPixels(2, this));
 

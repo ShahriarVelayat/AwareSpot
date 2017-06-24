@@ -5,16 +5,16 @@ package in.awarespot.awarespot.activities.firstActivity;
  */
 
 public class CardItem {
-    private int mTextResource;
+    private int mImageResource;
     private int mTitleResource;
 
-    public CardItem(int title, int text) {
+    public CardItem(int title, int image) {
         mTitleResource = title;
-        mTextResource = text;
+        mImageResource = image;
     }
 
     public int getText() {
-        return mTextResource;
+        return mImageResource;
     }
 
     public int getTitle() {

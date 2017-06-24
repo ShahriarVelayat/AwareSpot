@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -76,9 +77,9 @@ public class cardPagerAdapter extends PagerAdapter implements CardAdapter {
 
     private void bind(CardItem item, View view) {
         TextView titleTextView = (TextView) view.findViewById(R.id.titleTextView);
-        TextView contentTextView = (TextView) view.findViewById(R.id.contentTextView);
+        ImageView contentImageView = (ImageView) view.findViewById(R.id.contentTextView);
         titleTextView.setText(item.getTitle());
-        contentTextView.setText(item.getText());
+        contentImageView.setImageResource(item.getText());
     }
 
 }
