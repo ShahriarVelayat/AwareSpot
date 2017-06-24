@@ -22,6 +22,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +42,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
     private double latPoint;
     private double lngPoint;
-
     private Geocoder mGeocoder;
 
     @Override
@@ -59,17 +61,13 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void initUiElement(){
 
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
             @Override
             public void onMapClick(LatLng point) {
                 // TODO Auto-generated method stub
-
                 mMap.addMarker(new MarkerOptions().position(point));
                 latPoint = point.latitude;
                 lngPoint = point.longitude;
-
                 dialogeShow();
             }
         });
@@ -166,6 +164,8 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "Can't find style. Error: ", e);
         }
 
+        getAwareSpots();
+
 
         LatLng sydney = new LatLng(-34, 151);
 //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -189,4 +189,56 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return null;
     }
+
+    public void getAwareSpots(){
+        mMap.clear();
+        FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                AwareSpotModel mAwareSpotModel = dataSnapshot.getValue(AwareSpotModel.class);
+
+                try {
+                        markOnMap(dataSnapshot.getKey(),mAwareSpotModel.getTitleOfAwareSpot(),mAwareSpotModel.getContentOfAwareSpot(),mAwareSpotModel.getCity(),mAwareSpotModel.getLat(),mAwareSpotModel.getLng());
+                }catch (Exception e){
+                        Log.d(TAG,""+e);
+                }
+
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void markOnMap(String id , String Title,String Despcription,String city,double lat, double lng){
+        LatLng sydney = new LatLng(lat, lng);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot" + city );
+        spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
+        spot.snippet("" + Despcription);
+        mMap.addMarker(spot);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(25.153900,78.013092))
+                .zoom(4)
+                .build();
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
 }
