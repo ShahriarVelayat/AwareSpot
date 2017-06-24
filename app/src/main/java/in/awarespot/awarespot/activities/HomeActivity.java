@@ -202,8 +202,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                 }catch (Exception e){
                         Log.d(TAG,""+e);
                 }
-
-
             }
 
             @Override
@@ -235,7 +233,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         spot.snippet("" + Despcription);
         mMap.addMarker(spot);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(25.153900,78.013092))
+                .target(new LatLng(lat,lng))
                 .zoom(4)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

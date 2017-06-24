@@ -358,6 +358,7 @@ public class LoginActivity extends AppCompatActivity implements
                 // Np-op, handled by sign-in check
             {
 
+
                 if(checkFirst == true){
 
                     new MaterialDialog.Builder(this)
