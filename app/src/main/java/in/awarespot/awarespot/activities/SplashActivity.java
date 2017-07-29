@@ -2,32 +2,69 @@
 package in.awarespot.awarespot.activities;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
+
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.w3c.dom.Text;
 
 import in.awarespot.awarespot.R;
 
 public class SplashActivity extends AppCompatActivity {
 
     protected boolean _active = true;
-    protected int _splashTime = 1000; // time to display the splash screen in ms
+    protected int _splashTime = 5000; // time to display the splash screen in ms
     public boolean is_first = false;
-
+    private Typeface gujuTypeFace,hindTypeFace;
+    public TextView  textViewTitle,textViewTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        textViewTitle = (TextView) findViewById(R.id.name);
+        textViewTag = (TextView) findViewById(R.id.titletag);
+
+        gujuTypeFace = Typeface.createFromAsset(getAssets(), "fonts/Lohit-Gujarati.ttf");
+        gujuTypeFace = Typeface.createFromAsset(getAssets(), "fonts/DroidHindi.ttf");
+
+
+        FirebaseMessaging.getInstance().subscribeToTopic("common");
+
         screendesign();
 
         ScreenDesign();
 
         splashThread();
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 100ms
+                textViewTitle.setTypeface(gujuTypeFace);
+                textViewTitle.setText("રાજકોટ જનહિત");
+            }
+        }, 1500);
+
+        final Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 100ms
+                textViewTitle.setTypeface(hindTypeFace);
+                textViewTitle.setText("રાજકોટ જનહિત");
+            }
+        }, 1500);
 
     }
 
@@ -69,7 +106,7 @@ public class SplashActivity extends AppCompatActivity {
                 } finally {                    {
 
                     startActivity(new Intent(SplashActivity.this,
-                            LoginActivity.class));}
+                            HomeActivity.class));}
 
                     finish();
                 }

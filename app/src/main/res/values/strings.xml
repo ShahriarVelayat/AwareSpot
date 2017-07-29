@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">AwareSpot</string>
+    <string name="app_name">Rajkot JanHit</string>
     <string name="title_activity_maps">Map</string>
 
 
-    <string name="title_1">Women + Travelers</string>
-    <string name="title_2">Safe Region</string>
-    <string name="title_3">on Map</string>
+    <string name="title_1">Public Utility &amp; services</string>
+    <string name="title_2">Empowering Busni</string>
+    <string name="title_3">Get Every thing on Map</string>
 
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>

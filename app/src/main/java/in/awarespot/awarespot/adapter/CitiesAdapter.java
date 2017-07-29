@@ -44,7 +44,7 @@ public class CitiesAdapter extends ArrayAdapter<String> {
             holder = new ViewHolder();
 
             holder.nameTextView = (TextView) view.findViewById(R.id.addressTextView);
-            holder.editImageView = (ImageView) view.findViewById(R.id.editButton);
+
             Paper.init(getContext());
 
             view.setTag(holder);
@@ -59,7 +59,7 @@ public class CitiesAdapter extends ArrayAdapter<String> {
 
     static class ViewHolder {
         TextView nameTextView;
-        ImageView editImageView;
+
     }
 
 

@@ -6,13 +6,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.InputType;
 import android.text.Spanned;
@@ -53,7 +48,7 @@ import java.util.Locale;
 
 import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
 import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
-import in.awarespot.awarespot.Models.AwareSpotModel;
+import in.awarespot.awarespot.Models.UtilityModel;
 import in.awarespot.awarespot.R;
 
 public class HomeActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -117,7 +112,7 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void dialogeShow(){
-        final AwareSpotModel awareSpotModel = new AwareSpotModel();
+        final UtilityModel utilityModel = new UtilityModel();
         new MaterialDialog.Builder(this)
                 .title("Enter title")
                 .content("one can give any title to there aware spot")
@@ -126,9 +121,9 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         // Do something
-                        awareSpotModel.setLat(latPoint);
-                        awareSpotModel.setLng(lngPoint);
-                        awareSpotModel.setTitleOfAwareSpot(input.toString());
+                        utilityModel.setLat(latPoint);
+                        utilityModel.setLng(lngPoint);
+                        utilityModel.setTitleOfUtility(input.toString());
 
                         new MaterialDialog.Builder(HomeActivity.this)
                                 .title("Enter Content")
@@ -138,10 +133,10 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
                                     @Override
                                     public void onInput(MaterialDialog dialog, CharSequence input) {
                                         // Do something
-                                        awareSpotModel.setContentOfAwareSpot(input.toString());
+                                        utilityModel.setContentOfUtility(input.toString());
                                         try{
-                                            awareSpotModel.setCity(getCityNameByCoordinates(latPoint,lngPoint));
-                                            FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).push().setValue(awareSpotModel);
+                                            utilityModel.setCity(getCityNameByCoordinates(latPoint,lngPoint));
+                                            FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).push().setValue(utilityModel);
                                         }catch(Exception e){
                                             Log.d(TAG,""+e);
                                         }
@@ -211,18 +206,16 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
-
         getAwareSpots();
 
-
-        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot" );
-        spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
-        mMap.addMarker(spot);
+//        LatLng sydney = new LatLng(-34, 151);
+////        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+//        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot" );
+//        spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
+//        mMap.addMarker(spot);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(25.153900, 78.013092))
-                .zoom(4)
+                .target(new LatLng(22.3038945, 70.80215989999999))
+                .zoom(10)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
@@ -231,7 +224,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Address> addresses = mGeocoder.getFromLocation(lat, lon, 1);
         if (addresses != null && addresses.size() > 0) {
-
             return addresses.get(0).getLocality();
 
         }
@@ -243,10 +235,10 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                AwareSpotModel mAwareSpotModel = dataSnapshot.getValue(AwareSpotModel.class);
-
+                UtilityModel mUtilityModel = dataSnapshot.getValue(UtilityModel.class);
+                mUtilityModel.setUid(dataSnapshot.getKey());
                 try {
-                        markOnMap(dataSnapshot.getKey(),mAwareSpotModel.getTitleOfAwareSpot(),mAwareSpotModel.getContentOfAwareSpot(),mAwareSpotModel.getCity(),mAwareSpotModel.getLat(),mAwareSpotModel.getLng());
+                        markOnMap(mUtilityModel);
                 }catch (Exception e){
                         Log.d(TAG,""+e);
                 }
@@ -274,15 +266,15 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void markOnMap(String id , String Title,String Despcription,String city,double lat, double lng){
-        LatLng sydney = new LatLng(lat, lng);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        MarkerOptions spot = new MarkerOptions().position(sydney).title("Aware-spot " + city );
+    public void markOnMap(UtilityModel mUtilityModel){
+        LatLng sydney = new LatLng(mUtilityModel.lat, mUtilityModel.lng);
+
+        MarkerOptions spot = new MarkerOptions().position(sydney).title(mUtilityModel.getTitleOfUtility());
         spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
-        spot.snippet("" + Despcription);
+        spot.snippet("" + mUtilityModel.contentOfUtility);
         mMap.addMarker(spot);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(lat,lng))
+                .target(new LatLng(mUtilityModel.lat,mUtilityModel.lng))
                 .zoom(12)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

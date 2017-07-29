@@ -9,26 +9,42 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:src="@drawable/logo"
+        android:src="@drawable/rmc_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_above="@+id/name"
         />
+
     <TextView
+        android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AwareSpot"
-        android:layout_below="@+id/logo"
+        android:text="Rajkot JanHit"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:textSize="25sp" android:textStyle="bold"
+        android:padding="10dp"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:textSize="25sp"
+        android:textStyle="bold"
         android:fontFamily="sans-serif-thin"/>
+
+    <ImageView
+        android:id="@+id/logormc"
+        android:src="@drawable/logomain"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/titletag"
+        />
     <TextView
+        android:id="@+id/titletag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="By the Women, For a Women"
+        android:text="By the Govt., For the People"
         android:gravity="center"
         android:padding="10dp"
         android:layout_alignParentBottom="true"
@@ -36,5 +52,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_alignParentBottom="true"
+        app:mpb_progressStyle="horizontal"
+        app:mpb_progressBackgroundTint="#fff"
+        app:mpb_indeterminateTint="#212121"
+        app:mpb_useIntrinsicPadding="false"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
 
 </RelativeLayout>

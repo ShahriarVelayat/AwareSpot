@@ -119,11 +119,13 @@ public class UserProfileActivity extends AppCompatActivity {
             }catch (Exception e){
                 Log.d(TAG,""+e);
             }
-
+            adapter.add("Water Connection in XYZ Area will be closed on Date - 20 July 2017 from 10:30 Am to 12:30 Pm, for Pipe Repairing");
             adapter.notifyDataSetChanged();
             Log.d(TAG, uid);
         } else {
             // No user is signed in
+            adapter.add("Water Connection in XYZ Area will be closed on Date - 20 July 2017 from 10:30 Am to 12:30 Pm, for Pipe Repairing");
+            adapter.notifyDataSetChanged();
         }
     }
 
