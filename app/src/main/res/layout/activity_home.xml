@@ -35,6 +35,8 @@
                     android:src="@drawable/add"
                     app:civ_border_width="1dp"
                     android:layout_weight="1"
+                    android:clickable="true"
+                    android:onClick="underProcess"
                     app:civ_border_color="#FFf"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -46,6 +48,8 @@
                     android:src="@drawable/vegetables"
                     app:civ_border_width="1dp"
                     android:layout_weight="1"
+                    android:clickable="true"
+                    android:onClick="story"
                     app:civ_border_color="#FFf"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -57,6 +61,8 @@
                     android:src="@drawable/airtel"
                     android:layout_weight="1"
                     app:civ_border_width="1dp"
+                    android:clickable="true"
+                    android:onClick="underProcess"
                     app:civ_border_color="#fff"/>
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -68,6 +74,8 @@
                     android:src="@drawable/raymond"
                     android:layout_weight="1"
                     app:civ_border_width="1dp"
+                    android:clickable="true"
+                    android:onClick="underProcess"
                     app:civ_border_color="#FFf"/>
 
 
@@ -119,7 +127,12 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             />
+
+
+
     </RelativeLayout>
+
+
 
 
 </android.support.design.widget.CoordinatorLayout>

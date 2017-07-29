@@ -21,7 +21,7 @@ import in.awarespot.awarespot.R;
 public class SplashActivity extends AppCompatActivity {
 
     protected boolean _active = true;
-    protected int _splashTime = 5000; // time to display the splash screen in ms
+    protected int _splashTime = 4500; // time to display the splash screen in ms
     public boolean is_first = false;
     private Typeface gujuTypeFace,hindTypeFace;
     public TextView  textViewTitle,textViewTag;
@@ -35,7 +35,7 @@ public class SplashActivity extends AppCompatActivity {
         textViewTag = (TextView) findViewById(R.id.titletag);
 
         gujuTypeFace = Typeface.createFromAsset(getAssets(), "fonts/Lohit-Gujarati.ttf");
-        gujuTypeFace = Typeface.createFromAsset(getAssets(), "fonts/DroidHindi.ttf");
+        hindTypeFace = Typeface.createFromAsset(getAssets(), "fonts/DroidHindi.ttf");
 
 
         FirebaseMessaging.getInstance().subscribeToTopic("common");
@@ -52,7 +52,9 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 //Do something after 100ms
                 textViewTitle.setTypeface(gujuTypeFace);
+                textViewTag.setTypeface(gujuTypeFace);
                 textViewTitle.setText("રાજકોટ જનહિત");
+                textViewTag.setText("પીપલ્સ રાજકોટ, બેટર રાજકોટ, સલામત રાજકોટ,સ્માર્ટ રાજકોટ");
             }
         }, 1500);
 
@@ -62,9 +64,11 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 //Do something after 100ms
                 textViewTitle.setTypeface(hindTypeFace);
-                textViewTitle.setText("રાજકોટ જનહિત");
+                textViewTag.setTypeface(hindTypeFace);
+                textViewTitle.setText("राजकोट जनहित");
+                textViewTag.setText("पीपुल्स राजकोट, बेहतर राजकोट, सुरक्षित राजकोट, स्मार्ट राजकोट");
             }
-        }, 1500);
+        }, 3000);
 
     }
 

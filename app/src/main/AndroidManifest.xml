@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/ThemeOverlay.MyNoTitleActivity">
         <activity android:name=".activities.SplashActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +40,8 @@
         <activity
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity_transparent"></activity>
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity_transparent" />
+        <activity android:name=".activities.storyActivity"></activity>
     </application>
 
 </manifest>

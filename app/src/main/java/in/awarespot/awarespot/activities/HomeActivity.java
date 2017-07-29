@@ -60,7 +60,8 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     private double lngPoint;
     private Geocoder mGeocoder;
     private TextView mProfileText;
-
+    LatLng latlng;
+    int i=0;
     private TextView search;
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
@@ -88,11 +89,13 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                // TODO Auto-generated method stub
-                mMap.addMarker(new MarkerOptions().position(point));
-                latPoint = point.latitude;
-                lngPoint = point.longitude;
-                dialogeShow();
+
+
+
+//                mMap.addMarker(new MarkerOptions().position(point));
+//                latPoint = point.latitude;
+//                lngPoint = point.longitude;
+                //dialogeShow();
             }
         });
         search.setOnClickListener(new View.OnClickListener() {
@@ -232,15 +235,17 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getAwareSpots(){
         mMap.clear();
+
         FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.AWARE_SPOT).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                UtilityModel mUtilityModel = dataSnapshot.getValue(UtilityModel.class);
-                mUtilityModel.setUid(dataSnapshot.getKey());
+                i++;
                 try {
+                    UtilityModel mUtilityModel = dataSnapshot.getValue(UtilityModel.class);
+                    mUtilityModel.setUid(dataSnapshot.getKey());
                         markOnMap(mUtilityModel);
                 }catch (Exception e){
-                        Log.d(TAG,""+e);
+                        Log.d("log_error", i+ " "+e);
                 }
             }
 
@@ -270,20 +275,46 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(mUtilityModel.lat, mUtilityModel.lng);
 
         MarkerOptions spot = new MarkerOptions().position(sydney).title(mUtilityModel.getTitleOfUtility());
-        spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
+        if(mUtilityModel.getTag1().toLowerCase().equals("hospital")){
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.hospital));
+        }else if(mUtilityModel.getTag1().toLowerCase().equals("governmentoffice")){
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.government));
+        }else if(mUtilityModel.getTag1().toLowerCase().equals("transportation")){
+            if(mUtilityModel.getTag2().toLowerCase().equals("airport")){
+                spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.airplane));
+            }else if(mUtilityModel.getTag2().toLowerCase().equals("busstation")){
+                spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus));
+            }else if(mUtilityModel.getTag2().toLowerCase().equals("railwaystation")){
+                spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.subway));
+            }
+        }else if(mUtilityModel.getTag1().toLowerCase().equals("meadow")){
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.parks));
+        }
+        else if(mUtilityModel.getTag1().toLowerCase().equals("bathroom")){
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.toilet));
+        }
+        else if(mUtilityModel.getTag1().toLowerCase().equals("exhibition")){
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.circus));
+        }
+        else {
+            spot.icon(BitmapDescriptorFactory.fromResource(R.drawable.spot));
+        }
         spot.snippet("" + mUtilityModel.contentOfUtility);
         mMap.addMarker(spot);
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(mUtilityModel.lat,mUtilityModel.lng))
-                .zoom(12)
+                .zoom(13)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     public void searchCity(double latPoint, double lngPoint){
+        latlng = new LatLng(latPoint,lngPoint);
+        mMap.addMarker(new MarkerOptions().position(latlng));
+
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latPoint,lngPoint))
-                .zoom(12)
+                .zoom(17)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
@@ -383,7 +414,16 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent = new Intent( HomeActivity.this,UserProfileActivity.class);
         startActivity(intent);
         overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+    }
 
+    public void story(View view){
+        Intent intent = new Intent( HomeActivity.this,storyActivity.class);
+        startActivity(intent);
+        overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+    }
+
+    public void underProcess(View view){
+        Toast.makeText(HomeActivity.this,"Stories for nearby stores in Under Development",Toast.LENGTH_SHORT).show();
     }
 
 

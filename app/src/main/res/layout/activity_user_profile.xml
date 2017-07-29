@@ -37,9 +37,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
+            android:text="Saikiran_Sondarkar"
             android:hint="UserName " />
     </android.support.design.widget.TextInputLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notifications"
+        android:gravity="center"
+        android:layout_below="@+id/input_layout_name"
+        android:layout_alignParentStart="true" />
 
     <ListView
         android:layout_below="@id/input_layout_name"
@@ -69,7 +77,7 @@
         android:layout_weight="1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Add New"
+        android:text="Raise Issue"
         android:background="@color/colorAccent"
         android:layout_margin="10dp"
         android:textColor="@android:color/white"/>

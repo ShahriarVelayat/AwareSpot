@@ -29,6 +29,9 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
@@ -38,6 +41,7 @@ import java.util.Locale;
 
 import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
 import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
+import in.awarespot.awarespot.Models.NotifyModel;
 import in.awarespot.awarespot.R;
 import in.awarespot.awarespot.Models.UserModel;
 
@@ -104,29 +108,45 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     public void getuser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            uid = user.getUid();
-            UserModel userModel = Paper.book().read(FirebaseInfo.Users,new UserModel());
-            nameEditText.setText(userModel.getNameOfUser());
 
-            citiesList = userModel.citiesKnown;
-            try{
-                for (String city : citiesList){
-                    adapter.add(city);
+        FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Notify).child("common").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                try{
+                    NotifyModel notifyModel = dataSnapshot.getValue(NotifyModel.class);
+                    adapter.add("Title : "+notifyModel.getTitle() + "\n\n Message " + notifyModel.getBody());
+                    adapter.notifyDataSetChanged();
+                }catch (Exception e){
+
                 }
-            }catch (Exception e){
-                Log.d(TAG,""+e);
+
+
             }
-            adapter.add("Water Connection in XYZ Area will be closed on Date - 20 July 2017 from 10:30 Am to 12:30 Pm, for Pipe Repairing");
-            adapter.notifyDataSetChanged();
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
             Log.d(TAG, uid);
-        } else {
-            // No user is signed in
-            adapter.add("Water Connection in XYZ Area will be closed on Date - 20 July 2017 from 10:30 Am to 12:30 Pm, for Pipe Repairing");
-            adapter.notifyDataSetChanged();
-        }
+
     }
 
     public void setuserModel() {
