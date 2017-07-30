@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -35,7 +36,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -112,7 +115,7 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 try{
                     NotifyModel notifyModel = dataSnapshot.getValue(NotifyModel.class);
-                    adapter.add("Title : "+notifyModel.getTitle() + "\n\n Message " + notifyModel.getBody());
+                    adapter.add("Date : "+ getDate(notifyModel.getTimeStamp())+"\n\nTitle : "+notifyModel.getTitle() + "\n\n Message " + notifyModel.getBody());
                     adapter.notifyDataSetChanged();
                 }catch (Exception e){
                  Log.d("Notify",e+"");
@@ -142,9 +145,15 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
+
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        String date = DateFormat.format("dd/MM/yyyy hh:mm a", cal).toString();
+        return date;
+    }
+
 
     public void setuserModel() {
         UserModel userModel = new UserModel();

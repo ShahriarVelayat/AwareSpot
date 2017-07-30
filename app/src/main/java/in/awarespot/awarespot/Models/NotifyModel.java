@@ -8,10 +8,10 @@ public class NotifyModel {
 
     public  String body;
     public  String title;
-    public String timeStamp;
+    public long timeStamp;
 
 
-    public NotifyModel(String body, String title, String timeStamp) {
+    public NotifyModel(String body, String title, long timeStamp) {
         this.body = body;
         this.title = title;
         this.timeStamp = timeStamp;
@@ -36,11 +36,11 @@ public class NotifyModel {
         this.title = title;
     }
 
-    public String getTimeStamp() {
+    public long getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
 }

@@ -134,8 +134,7 @@ public class PostStoryActivity extends AppCompatActivity {
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 // Do something
                                 StoriesModel mStoriesModel = new StoriesModel();
-
-                                mStoriesModel.setShopId("in");
+                                mStoriesModel.setShopId(input.toString());
                                 mStoriesModel.setShopName("abcxyz");
                                 mStoriesModel.setCaptionText(editText.getText().toString());
                                 mStoriesModel.setImageUrl(DOWNLOAD_URL);
