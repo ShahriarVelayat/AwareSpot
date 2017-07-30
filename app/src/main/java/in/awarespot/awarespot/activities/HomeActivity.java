@@ -48,6 +48,7 @@ import java.util.Locale;
 
 import in.awarespot.awarespot.FirebaseInfo.FirebaseDataBaseCheck;
 import in.awarespot.awarespot.FirebaseInfo.FirebaseInfo;
+import in.awarespot.awarespot.Models.StoriesModel;
 import in.awarespot.awarespot.Models.UtilityModel;
 import in.awarespot.awarespot.R;
 
@@ -89,8 +90,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-
-
 
 //                mMap.addMarker(new MarkerOptions().position(point));
 //                latPoint = point.latitude;
@@ -176,7 +175,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-
     }
 
     /**
@@ -188,7 +186,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -228,7 +225,6 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         List<Address> addresses = mGeocoder.getFromLocation(lat, lon, 1);
         if (addresses != null && addresses.size() > 0) {
             return addresses.get(0).getLocality();
-
         }
         return null;
     }
@@ -416,8 +412,14 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
         overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
     }
 
-    public void story(View view){
-        Intent intent = new Intent( HomeActivity.this,storyActivity.class);
+    public void seestory(View view){
+        Intent intent = new Intent( HomeActivity.this,SeeStories.class);
+        startActivity(intent);
+        overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
+    }
+
+    public void uploadStory(View view){
+        Intent intent = new Intent( HomeActivity.this,PostStoryActivity.class);
         startActivity(intent);
         overridePendingTransition( R.anim.slide_in_up, R.anim.slide_out_up );
     }
@@ -427,4 +429,38 @@ public class HomeActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
+    public void getStories(){
+        FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Stories).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                try{
+                    StoriesModel mStoriesModel = dataSnapshot.getValue(StoriesModel.class);
+
+
+                }catch (Exception e){
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

@@ -41,7 +41,8 @@
             android:name=".activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity_transparent" />
-        <activity android:name=".activities.storyActivity"></activity>
+        <activity android:name=".activities.PostStoryActivity" />
+        <activity android:name=".activities.SeeStories"></activity>
     </application>
 
 </manifest>

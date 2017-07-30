@@ -6,25 +6,41 @@ package in.awarespot.awarespot.Models;
 
 public class NotifyModel {
 
-    public static String body;
-    public static String title;
+    public  String body;
+    public  String title;
+    public String timeStamp;
+
+
+    public NotifyModel(String body, String title, String timeStamp) {
+        this.body = body;
+        this.title = title;
+        this.timeStamp = timeStamp;
+    }
 
     public NotifyModel() {
     }
 
-    public static String getBody() {
+    public String getBody() {
         return body;
     }
 
-    public static void setBody(String body) {
-        NotifyModel.body = body;
+    public void setBody(String body) {
+        this.body = body;
     }
 
-    public static String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public static void setTitle(String title) {
-        NotifyModel.title = title;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

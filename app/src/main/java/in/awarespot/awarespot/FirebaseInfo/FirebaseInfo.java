@@ -11,6 +11,8 @@ public class FirebaseInfo {
     public static String Notify = "notifications";
     public static String NodeUsing = "Development";
     public static String Cities = "cities";
+    public static String Stories = "stories";
+
 
 
 

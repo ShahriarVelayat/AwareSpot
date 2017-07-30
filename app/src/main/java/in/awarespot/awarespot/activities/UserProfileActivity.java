@@ -74,7 +74,6 @@ public class UserProfileActivity extends AppCompatActivity {
         initUiElements();
         initUiListners();
         getuser();
-
     }
 
     public void initUiElements() {
@@ -91,7 +90,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     public void initUiListners() {
 
-
         addNewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +100,7 @@ public class UserProfileActivity extends AppCompatActivity {
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setuserModel();
+//                setuserModel();
             }
         });
     }
@@ -112,13 +110,12 @@ public class UserProfileActivity extends AppCompatActivity {
         FirebaseDataBaseCheck.getDatabase().getReference().child(FirebaseInfo.NodeUsing).child(FirebaseInfo.Notify).child("common").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                 try{
                     NotifyModel notifyModel = dataSnapshot.getValue(NotifyModel.class);
                     adapter.add("Title : "+notifyModel.getTitle() + "\n\n Message " + notifyModel.getBody());
                     adapter.notifyDataSetChanged();
                 }catch (Exception e){
-
+                 Log.d("Notify",e+"");
                 }
 
 
@@ -145,7 +142,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-            Log.d(TAG, uid);
+
 
     }
 
