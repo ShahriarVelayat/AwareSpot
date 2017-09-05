@@ -10,5 +10,5 @@ Firebase Cloud Notification,
 Firebase Mobile OTP Auth,
 Made with Material Design GuideLines
 
-![Image](https://drive.google.com/open?id=0B1wylqXDtmRaRXlEY250UEk5WjQ)
+![Image](https://github.com/sai-sondarkar/AwareSpot/blob/master/Screenshot_20170625-165211.png)
 
